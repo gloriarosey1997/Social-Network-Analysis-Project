@@ -32,8 +32,6 @@ Manipulate each of the data sets so that it is suitable for building a social ne
 
 library(tidyr)
 library(dplyr)
-
-install.packages('igraph')
 library(igraph)
 
 get_on <- read.csv("get.on.with.csv")
@@ -59,7 +57,6 @@ Create a graph for each of the data sets, are the graphs directed or undirected?
 ```{r}
 
 # 1. Who do you get on with in the class?  Directed
-pdf(file = "gbw.pdf")
 
 g_graph <- graph.data.frame(get_on_edge, directed = TRUE,
                             vertices = get_on_vertex)
@@ -183,13 +180,13 @@ What is the size of the largest clique(s) in each of the three networks?
 
 ```{r}
 
-# 12 is the largest clique in get on with network
+# 12 is the largest clique size in get on with network
 clique_num(g_graph)
 
-# 7 is the largest clique in get on with network
+# 7 is the largest clique size in get on with network
 clique_num(b_graph)
 
-# 9 is the largest clique in get on with network
+# 9 is the largest clique size in get on with network
 clique_num(p_graph)
 
 ```
@@ -258,11 +255,40 @@ Write a narrative description of the social ties among members of this 7th grade
 Find another data set that interests you on the ([ICON](https://icon.colorado.edu/#!/)) website. Load the data into igraph, visualize the graph and use one of the metrics you have learned to characterize structures within the graph.
 
 ```{r}
-file.choose()
 
-setwd("C:/Users/19492/Desktop/Courses/HUDK 4051 Machine Learning/Assignment3 - Wu/")
+# read.csv does not work for the file I searched, so I just click 'import dataset' to do the following work
 
-S1 <- data.frame(read.csv("stormofwords.csv", header = T))
+storm1 = matrix(stormofswords)
+storm_graph <- graph.data.frame(stormofswords,
+                               directed = TRUE)
+plot(storm_graph,
+     layout = layout.fruchterman.reingold,
+     edge.arrow.size = .4,
+     vertex.size = .5,
+     vertex.label.cex = .4,
+     edge.arroow.width = .5)
 
+# Tyrion - highest degree centrality
+sort(degree(storm_graph), decreasing = TRUE)
+
+# Tyrion - highest betweeness centrality
+sort(betweenness(storm_graph), decreasing = TRUE)
+
+# Sansa- highest closeness centrality
+sort(closeness(storm_graph), decreasing = TRUE)
+
+# 0 mutual connection, 352 asymmetrical, 5319 non-existent
+dyad_census(storm_graph)
+
+triad_census(storm_graph)
+
+# 7 is the largest clique size
+clique_num(storm_graph)
+
+# Tyrion  Cersei  Gregor  Joffrey Ilyn    Meryn   Sandor 
+largest.cliques(storm_graph)
+
+# 136 max cliques in this network
+max_cliques(storm_graph)
 ```
 
